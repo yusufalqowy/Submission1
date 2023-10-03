@@ -1,4 +1,4 @@
-package com.example.submission1.ui.detail
+package com.example.submission1.ui.darktheme
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

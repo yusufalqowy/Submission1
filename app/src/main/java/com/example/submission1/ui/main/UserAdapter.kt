@@ -48,10 +48,7 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         holder.bind(list[position])
-//
-//        val ivFavorit = holder.binding.ivFavorit
-//        if ()
-   }
+    }
 
     override fun getItemCount(): Int = list.size
 

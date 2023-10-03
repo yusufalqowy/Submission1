@@ -19,15 +19,11 @@ class UserRepository(application: Application) {
         return mfavUserDao.getFavUser()
     }
 
-    fun insert(id: FavUser) {
-        executorService.execute { mfavUserDao.addToFavorit(id) }
+    fun insert(username: FavUser) {
+        executorService.execute { mfavUserDao.addToFavorit(username) }
     }
 
-    fun delete(id: FavUser) {
-        executorService.execute { mfavUserDao.delete(id) }
-    }
-
-    fun findFavUserByUsername(username: String): LiveData<List<FavUser>> {
-        return mfavUserDao.getFavUserByUsername(username)
+    fun delete(username: FavUser) {
+        executorService.execute { mfavUserDao.delete(username) }
     }
 }

@@ -46,9 +46,9 @@ class DetailUserActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this).get(DetailUserViewModel::class.java)
 
-        viewModel.getAllUser().observe(this) { favUserList ->
-            isChecked = favUserList.isNullOrEmpty()
-            if (!isChecked) {
+        viewModel.getAllUser().observe(this) {
+            isChecked = it.isNullOrEmpty()
+            if (isChecked) {
                 binding.fabFavorit.setImageDrawable(
                     ContextCompat.getDrawable(
                         this, R.drawable.baseline_favorite_24
@@ -63,7 +63,29 @@ class DetailUserActivity : AppCompatActivity() {
             }
         }
 
-        if ()
+        binding.fabFavorit.setOnClickListener {
+            if (isChecked){
+                viewModel.delete(username)
+                Snackbar.make(
+                    binding.root,
+                    StringBuilder(username + " ").append("Berhasil Di Hapus"),
+                    Snackbar.LENGTH_LONG
+                ).setAction("Gagal"){
+                    viewModel.insert(username)
+                    Toast.makeText(this, "Undo", Toast.LENGTH_LONG)
+                        .show()
+                }.show()
+            } else{
+                viewModel.insert(username)
+                Snackbar.make(
+                    binding.root,
+                    StringBuilder(username + " ").append("Berhasil Di Tambah"),
+                    Snackbar.LENGTH_LONG
+                ).setAction("Data Favorit"){
+                    startActivity(Intent(this, FavUserActivity::class.java))
+                }.show()
+            }
+        }
 
         viewModel.setUserDetail(username.toString())
         viewModel.getUserDetail().observe(this, {
@@ -96,5 +118,9 @@ class DetailUserActivity : AppCompatActivity() {
         } else {
             binding.progressBar.visibility = View.GONE
         }
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
 }

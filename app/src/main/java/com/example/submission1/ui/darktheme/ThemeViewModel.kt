@@ -1,9 +1,10 @@
-package com.example.submission1.ui.detail
+package com.example.submission1.ui.darktheme
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.submission1.ui.darktheme.ThemeSettingPreferences
 import kotlinx.coroutines.launch
 
 class ThemeViewModel(private val pref: ThemeSettingPreferences): ViewModel() {

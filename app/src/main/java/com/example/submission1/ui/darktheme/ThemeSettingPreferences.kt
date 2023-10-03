@@ -1,4 +1,4 @@
-package com.example.submission1.ui.detail
+package com.example.submission1.ui.darktheme
 
 import android.content.Context
 import androidx.datastore.core.DataStore

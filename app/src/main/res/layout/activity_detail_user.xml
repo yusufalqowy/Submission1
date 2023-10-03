@@ -138,5 +138,6 @@
         app:maxImageSize="34dp"
         app:shapeAppearanceOverlay="@style/FabRectangleShape"
         app:tint="@color/pink"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText"
+        android:onClick="onFavoriteButtonClick" />
 </androidx.constraintlayout.widget.ConstraintLayout>

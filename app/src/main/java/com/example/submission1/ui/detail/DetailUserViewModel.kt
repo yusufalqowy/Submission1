@@ -6,11 +6,15 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.submission1.data.response.DetailUserResponse
 import com.example.submission1.data.entity.FavUser
+import com.example.submission1.data.response.User
 import com.example.submission1.database.FavUserDao
 import com.example.submission1.database.UserDatabase
 import com.example.submission1.retrofit.ApiConfig
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,13 +36,13 @@ class DetailUserViewModel(application: Application) : AndroidViewModel(applicati
 
     private val userRepository: UserRepository = UserRepository(application)
     fun getAllUser(): LiveData<List<FavUser>> = userRepository.getAllUser()
-    fun insert(id: FavUser){
-        userRepository.insert(id)
+    fun insert(username: FavUser) {
+        userRepository.insert(username)
+    }
+    fun delete(username: FavUser) {
+        userRepository.delete(username)
     }
 
-    fun delete(id: FavUser){
-        userRepository.delete(id)
-    }
 
     fun setUserDetail(username: String) {
         val client = ApiConfig.apiInstance.getDetailUsers(username)
