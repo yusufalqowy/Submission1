@@ -38,6 +38,9 @@ class DetailUserViewModel(application: Application) : AndroidViewModel(applicati
     fun getAllUser(): LiveData<List<FavUser>> = userRepository.getAllUser()
     fun insert(username: FavUser) {
         userRepository.insert(username)
+        Log.d(TAG,"Insert, $username")
+        Log.d(TAG,"Insert, ${username.login}")
+        Log.d(TAG,"Insert, ${username.avatarUrl}")
     }
     fun delete(username: FavUser) {
         userRepository.delete(username)

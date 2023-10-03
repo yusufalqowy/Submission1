@@ -2,6 +2,7 @@ package com.example.submission1.ui.detail
 
 import UserRepository
 import android.app.ProgressDialog.show
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -46,45 +47,32 @@ class DetailUserActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this).get(DetailUserViewModel::class.java)
 
-        viewModel.getAllUser().observe(this) {
-            isChecked = it.isNullOrEmpty()
-            if (isChecked) {
-                binding.fabFavorit.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        this, R.drawable.baseline_favorite_24
-                    )
-                )
-            } else {
-                binding.fabFavorit.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        this, R.drawable.ic_favorit
-                    )
-                )
+        binding.fabFavorit.setOnClickListener{binding.fabFavorit.setOnClickListener{
+            if (!isChecked){
+                binding.fabFavorit.setImageResource(R.drawable.baseline_favorite_24)
+                isChecked = true
+
+                val favUser = intent.getParcelableExtra<FavUser>(EXTRA_USERNAME)
+                if (favUser != null) {
+                    viewModel.insert(favUser)
+                    showSnackbar("Added to Favorites")
+                    Log.d(TAG, "Insert $favUser")
+                    Toast.makeText(this, "Di Tambah", Toast.LENGTH_SHORT).show()
+                }
+            } else{
+                binding.fabFavorit.setImageResource(R.drawable.ic_favorit)
+                isChecked = false
+
+                val favUser = intent.getParcelableExtra<FavUser>(EXTRA_USERNAME)
+                if (favUser != null) {
+                    viewModel.delete(favUser)
+                    showSnackbar("Removed from Favorites")
+                    Log.d(TAG, "Delete $favUser")
+                    Toast.makeText(this, "Di Hapus", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
-        binding.fabFavorit.setOnClickListener {
-            if (isChecked){
-                viewModel.delete(username)
-                Snackbar.make(
-                    binding.root,
-                    StringBuilder(username + " ").append("Berhasil Di Hapus"),
-                    Snackbar.LENGTH_LONG
-                ).setAction("Gagal"){
-                    viewModel.insert(username)
-                    Toast.makeText(this, "Undo", Toast.LENGTH_LONG)
-                        .show()
-                }.show()
-            } else{
-                viewModel.insert(username)
-                Snackbar.make(
-                    binding.root,
-                    StringBuilder(username + " ").append("Berhasil Di Tambah"),
-                    Snackbar.LENGTH_LONG
-                ).setAction("Data Favorit"){
-                    startActivity(Intent(this, FavUserActivity::class.java))
-                }.show()
-            }
         }
 
         viewModel.setUserDetail(username.toString())
@@ -123,4 +111,5 @@ class DetailUserActivity : AppCompatActivity() {
     private fun showSnackbar(message: String) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
     }
+
 }
