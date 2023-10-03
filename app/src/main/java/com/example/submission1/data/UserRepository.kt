@@ -1,29 +1,20 @@
-import android.app.Application
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import com.example.submission1.data.entity.FavUser
 import com.example.submission1.database.FavUserDao
-import com.example.submission1.database.UserDatabase
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
-class UserRepository(application: Application) {
-    private val mfavUserDao: FavUserDao
-    private val executorService: ExecutorService = Executors.newSingleThreadExecutor()
-
-    init {
-        val db = UserDatabase.getDatabase(application)
-        mfavUserDao = db.userGithubDao()
-    }
+class UserRepository(val mfavUserDao: FavUserDao) {
 
     fun getAllUser(): LiveData<List<FavUser>> {
         return mfavUserDao.getFavUser()
     }
 
-    fun insert(username: FavUser) {
-        executorService.execute { mfavUserDao.addToFavorit(username) }
+    @WorkerThread
+    suspend fun insert(username: FavUser) {
+        mfavUserDao.addToFavorit(username)
     }
 
-    fun delete(username: FavUser) {
-        executorService.execute { mfavUserDao.delete(username) }
+    suspend fun delete(username: FavUser) {
+        mfavUserDao.delete(username)
     }
 }

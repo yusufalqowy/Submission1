@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.submission1.data.entity.FavUser
 
-@Database(entities = [FavUser::class], version = 1)
+@Database(entities = [FavUser::class], version = 1, exportSchema = false)
 abstract class UserDatabase : RoomDatabase() {
     abstract fun userGithubDao(): FavUserDao
 

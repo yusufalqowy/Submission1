@@ -10,7 +10,7 @@ import com.example.submission1.data.entity.FavUser
 
 @Dao
 interface FavUserDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addToFavorit(favoritUser: FavUser)
 
     @Query("SELECT * FROM favorit_user")

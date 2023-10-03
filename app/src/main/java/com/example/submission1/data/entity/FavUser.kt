@@ -8,7 +8,6 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "favorit_user")
-@Parcelize
 data class FavUser(
 
     @ColumnInfo(name = "avatarUrl")
@@ -20,4 +19,4 @@ data class FavUser(
     @field:SerializedName("login")
     val login: String,
 
-) : Parcelable
+)

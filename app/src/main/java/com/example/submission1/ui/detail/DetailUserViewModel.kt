@@ -7,12 +7,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.submission1.App
 import com.example.submission1.data.response.DetailUserResponse
 import com.example.submission1.data.entity.FavUser
 import com.example.submission1.data.response.User
 import com.example.submission1.database.FavUserDao
 import com.example.submission1.database.UserDatabase
 import com.example.submission1.retrofit.ApiConfig
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -34,16 +36,21 @@ class DetailUserViewModel(application: Application) : AndroidViewModel(applicati
     private val _user = MutableLiveData<DetailUserResponse>()
     val user: LiveData<DetailUserResponse> = _user
 
-    private val userRepository: UserRepository = UserRepository(application)
+    private val userRepository: UserRepository = (application as App).userRepository
     fun getAllUser(): LiveData<List<FavUser>> = userRepository.getAllUser()
     fun insert(username: FavUser) {
-        userRepository.insert(username)
+        CoroutineScope(Dispatchers.IO).launch {
+            userRepository.insert(username)
+        }
+
         Log.d(TAG,"Insert, $username")
         Log.d(TAG,"Insert, ${username.login}")
         Log.d(TAG,"Insert, ${username.avatarUrl}")
     }
     fun delete(username: FavUser) {
-        userRepository.delete(username)
+        CoroutineScope(Dispatchers.IO).launch {
+            userRepository.delete(username)
+        }
     }
 
 

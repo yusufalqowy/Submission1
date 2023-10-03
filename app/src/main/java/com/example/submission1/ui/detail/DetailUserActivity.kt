@@ -1,39 +1,30 @@
 package com.example.submission1.ui.detail
 
-import UserRepository
-import android.app.ProgressDialog.show
 import android.content.ContentValues.TAG
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.submission1.R
 import com.example.submission1.data.entity.FavUser
 import com.example.submission1.databinding.ActivityDetailUserBinding
-import com.example.submission1.ui.main.FavUserActivity
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.StringBuilder
 
 class DetailUserActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_USERNAME = "extra_username"
         const val EXTRA_ID = "extra_id"
+        const val EXTRA_AVATAR = "extra_avatar"
     }
 
     private lateinit var binding: ActivityDetailUserBinding
     private lateinit var viewModel: DetailUserViewModel
     private var isChecked = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,42 +32,46 @@ class DetailUserActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val username = intent.getStringExtra(EXTRA_USERNAME)
+        val avatar = intent.getStringExtra(EXTRA_AVATAR)
         val id = intent.getIntExtra(EXTRA_ID, 0)
         val bundle = Bundle()
         bundle.putString(EXTRA_USERNAME, username)
+        val favUser = FavUser(login = username.orEmpty(), avatarUrl = avatar.orEmpty())
+        viewModel = ViewModelProvider(this)[DetailUserViewModel::class.java]
 
-        viewModel = ViewModelProvider(this).get(DetailUserViewModel::class.java)
+        viewModel.getAllUser().observe(this){
+            if(it.contains(favUser)){
+                binding.fabFavorit.setImageResource(R.drawable.baseline_favorite_24)
+                isChecked = true
+            }
+        }
 
-        binding.fabFavorit.setOnClickListener{binding.fabFavorit.setOnClickListener{
-            if (!isChecked){
+
+        binding.fabFavorit.setOnClickListener {
+            if (!isChecked) {
                 binding.fabFavorit.setImageResource(R.drawable.baseline_favorite_24)
                 isChecked = true
 
-                val favUser = intent.getParcelableExtra<FavUser>(EXTRA_USERNAME)
-                if (favUser != null) {
+                if (!username.isNullOrEmpty()) {
                     viewModel.insert(favUser)
                     showSnackbar("Added to Favorites")
-                    Log.d(TAG, "Insert $favUser")
-                    Toast.makeText(this, "Di Tambah", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@DetailUserActivity, "Di Tambah", Toast.LENGTH_SHORT).show()
                 }
-            } else{
+            } else {
                 binding.fabFavorit.setImageResource(R.drawable.ic_favorit)
                 isChecked = false
 
-                val favUser = intent.getParcelableExtra<FavUser>(EXTRA_USERNAME)
-                if (favUser != null) {
+                if (!username.isNullOrEmpty()) {
                     viewModel.delete(favUser)
                     showSnackbar("Removed from Favorites")
                     Log.d(TAG, "Delete $favUser")
-                    Toast.makeText(this, "Di Hapus", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this, "Di Hapus", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
-        }
-
         viewModel.setUserDetail(username.toString())
-        viewModel.getUserDetail().observe(this, {
+        viewModel.getUserDetail().observe(this) {
             if (it != null) {
                 binding.apply {
                     tvName.text = it.name
@@ -91,7 +86,7 @@ class DetailUserActivity : AppCompatActivity() {
                 }
                 showLoading(false)
             }
-        })
+        }
 
         val sectionPagerAdapter = SectionPagerAdapeter(this, supportFragmentManager, bundle)
         binding.apply {
